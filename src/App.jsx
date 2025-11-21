@@ -1,70 +1,72 @@
+import { useEffect, useRef, useState } from 'react'
+
 function App() {
+  const phrases = [
+    'Ecco, finalmente la nuova app è pronta!',
+    'Scopri libri e poesie con la Montanari App',
+    'Immergiti in contenuti unici e poetici',
+    'Tutte le storie che ami in un’unica app',
+    'Leggi, esplora, e lasciati ispirare',
+    'Scarica subito la Montanari App',
+  ]
+
+  const [current, setCurrent] = useState(-1)
+  const [showButton, setShowButton] = useState(false)
+
+  useEffect(() => {
+    // Start after 1s
+    const startTimer = setTimeout(() => setCurrent(0), 1000)
+    return () => clearTimeout(startTimer)
+  }, [])
+
+  useEffect(() => {
+    if (current === -1) return
+    if (current < phrases.length) {
+      const t = setTimeout(() => setCurrent((c) => c + 1), 2500)
+      return () => clearTimeout(t)
+    } else {
+      const t = setTimeout(() => setShowButton(true), 300)
+      return () => clearTimeout(t)
+    }
+  }, [current, phrases.length])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-
-      <div className="relative min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full">
-          {/* Header with Flames icon */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center mb-6">
-              <img
-                src="/flame-icon.svg"
-                alt="Flames"
-                className="w-24 h-24 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
-              />
-            </div>
-
-            <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-              Flames Blue
-            </h1>
-
-            <p className="text-xl text-blue-200 mb-6">
-              Build applications through conversation
-            </p>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 shadow-xl mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                1
+    <div
+      className="min-h-screen w-full flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: '#FFD400', fontFamily: 'Arial, sans-serif' }}
+    >
+      <div className="relative w-full max-w-3xl text-center" style={{ color: '#003A8C' }}>
+        <div className="relative h-[220px] sm:h-[260px] md:h-[300px]">
+          {phrases.map((text, idx) => {
+            const isVisible = idx === current || (current > phrases.length - 1 && idx === phrases.length - 1)
+            return (
+              <div
+                key={idx}
+                className="absolute inset-0 flex items-center justify-center px-6"
+                style={{
+                  opacity: isVisible ? 1 : 0,
+                  transition: 'all 1s ease-in-out',
+                }}
+              >
+                <p className="text-[1.75rem] sm:text-[2rem] md:text-[2.25rem] leading-snug">{text}</p>
               </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Describe your idea</h3>
-                <p className="text-blue-200/80 text-sm">Use the chat panel on the left to tell the AI what you want to build</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Watch it build</h3>
-                <p className="text-blue-200/80 text-sm">Your app will appear in this preview as the AI generates the code</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Refine and iterate</h3>
-                <p className="text-blue-200/80 text-sm">Continue the conversation to add features and make changes</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-blue-300/60">
-              No coding required • Just describe what you want
-            </p>
-          </div>
+            )
+          })}
         </div>
+
+        <button
+          onClick={() => window.open('https://drive.google.com/file/d/1mCb6fNwNQSyy179mG34dYvK8IbBV3pqr/view?usp=sharing', '_blank')}
+          className="inline-block mt-8 px-8 py-3 rounded-xl text-[1.25rem] font-semibold focus:outline-none focus:ring-4"
+          style={{
+            backgroundColor: '#003A8C',
+            color: '#FFD400',
+            opacity: showButton ? 1 : 0,
+            transform: `scale(${showButton ? 1 : 0.8})`,
+            transition: 'all 1s ease',
+          }}
+        >
+          Download
+        </button>
       </div>
     </div>
   )
